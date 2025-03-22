@@ -2,7 +2,7 @@ from typing import Callable
 from fastapi import FastAPI
 from loguru import logger
 import uvicorn
-from settings import settings
+from core.settings import settings
 from starlette.middleware.cors import CORSMiddleware
 
 class App:
@@ -15,6 +15,7 @@ class App:
             self.application.include_router(
 
             )
+          
 
         return start_app
     
@@ -37,5 +38,7 @@ class App:
         self.application.add_event_handler("shutdown",self.on_terminate_app())
 
 app = App().application
+
+
 if __name__ =="__main__":
     uvicorn.run("main:app",host="0.0.0.0",port=8000,reload=True) 
