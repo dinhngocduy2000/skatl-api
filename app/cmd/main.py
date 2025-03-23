@@ -1,7 +1,9 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import asyncpg
+from router.auth import AuthRoute
+from handler.auth import AuthHandler
+from controller.auth import AuthController
 from repository.registry import Registry
 from core.database.postgres import create_pg_engine
 from typing import Callable
@@ -19,10 +21,15 @@ class App:
         async def start_app()->None:
             pg_engine=  create_pg_engine()
             registry = Registry(pg_engine)
-            prefix="/api/v1"
-            # self.application.include_router(
 
-            # )
+            auth_controller= AuthController(registry)
+            # AuthMiddleware.init(auth_controller)
+            auth_handler = AuthHandler(auth_controller)
+            auth_router = AuthRoute(auth_handler)
+            prefix="/api/v1"
+            self.application.include_router(
+                auth_router.router,prefix=prefix+"/auth",tags=["Auth"]
+            )
           
 
         return start_app
