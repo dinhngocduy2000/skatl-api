@@ -1,11 +1,11 @@
 import os
 import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from typing import Callable
 from fastapi import FastAPI
 from loguru import logger
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from core.settings import settings
 
 class App:
