@@ -1,9 +1,12 @@
+import os
+import sys
 from typing import Callable
 from fastapi import FastAPI
 from loguru import logger
-import uvicorn
-from core.settings import settings
 from starlette.middleware.cors import CORSMiddleware
+import uvicorn
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from core.settings import settings
 
 class App:
     application: FastAPI
