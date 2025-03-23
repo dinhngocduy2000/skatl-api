@@ -14,28 +14,28 @@ python-multipart
 sqlalchemy[asyncio] == 2.0.36
 asyncpg
 snowflake-id
-azure-storage-blob >= 12.20.0
-azure-identity >= 1.17.1
-langfuse
-chromadb
-openai
+# azure-storage-blob >= 12.20.0
+# azure-identity >= 1.17.1
+# langfuse
+# chromadb
+# openai
 aiolimiter >= 1.1.0
 dateparser >= 1.2.0
 tenacity >= 8.4.2
 instructor >= 1.3.4
-pdfminer-six == 20231228
+# pdfminer-six == 20231228
 sqlalchemy-filterset >= 2.0.0
-apscheduler >= 3.10.4
+# apscheduler >= 3.10.4
 regex >= 2024.5.15
-fastapi_mail
+# fastapi_mail
 pylint
-langchain
-langchain-community
-langchain-core
-langchain-openai
-langchain-chroma
-phonenumbers
-pymupdf4llm
-markdown
-weasyprint
-fastapi_mail
+# langchain
+# langchain-community
+# langchain-core
+# langchain-openai
+# langchain-chroma
+# phonenumbers
+# pymupdf4llm
+# markdown
+# weasyprint
+# fastapi_mail

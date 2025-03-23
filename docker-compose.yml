@@ -1,0 +1,30 @@
+version: "3.9"
+name: "skatl"
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432" # Host port from .env, container port fixed
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    build: .
+    ports:
+      - "${APP_PORT}:8000" # Host port from .env, container port fixed
+    depends_on:
+      - postgres
+    environment:
+      - PG_URL=${PG_URL} # Pass the constructed URL to FastAPI
+    volumes:
+      - ./app:/app
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
