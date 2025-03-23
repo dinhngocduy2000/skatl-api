@@ -10,7 +10,7 @@ class AppEnvTypes(Enum):
 class BaseAppSettings(BaseSettings):
     app_env: AppEnvTypes= AppEnvTypes.DEV
     class Config:
-        env_file=".env"
+        env_file="../../.env"
         extra="ignore"
         
 
@@ -22,6 +22,7 @@ class AppSettings(BaseAppSettings):
     redoc_url: str = "/redoc"
     title: str = "SkatL application"
     version: str = "0.0.0"
+    pg_url: str
 
       
     @property
@@ -37,3 +38,4 @@ class AppSettings(BaseAppSettings):
         }
     
 settings = AppSettings()
+print(f"Loaded PG_URL: {settings.pg_url}")
