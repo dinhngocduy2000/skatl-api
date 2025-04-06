@@ -23,7 +23,7 @@ class AppSettings(BaseAppSettings):
     title: str = "SkatL application"
     version: str = "0.0.0"
     pg_url: str
-
+    secret_key:str
       
     @property
     def fastapi_kwargs(self)->Dict[str,Any]:
@@ -35,6 +35,7 @@ class AppSettings(BaseAppSettings):
             "redoc_url": self.redoc_url,
             "title": self.title,
             "version": self.version,
+            "secret_key":self.secret_key
         }
     
 settings = AppSettings()
