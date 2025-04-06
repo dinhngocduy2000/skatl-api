@@ -13,8 +13,10 @@ class AuthRoute:
         self.handler = handler
 
         self.router.add_api_route(
-            path="/login", endpoint=self.handler.login,
+            path="/login",
+            endpoint=self.handler.login,
             methods=["POST"],
             summary="Login",
             description="Login",
-            response_model=str)
+            response_model=str
+        )
