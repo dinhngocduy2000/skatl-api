@@ -31,9 +31,7 @@ class AuthRepository:
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
         to_encode.update({"exp": expire})
-        # Ensure SECRET_KEY is valid
-        if not isinstance(SECRET_KEY, (str, bytes)):
-            raise ValueError(f"SECRET_KEY must be a string or bytes, got {(SECRET_KEY)}")
+
         
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
