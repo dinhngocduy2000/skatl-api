@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from common.success_response import SuccessResponse
 from schemas.auth import UserCredential
 
 from handler.auth import AuthHandler
@@ -19,4 +20,13 @@ class AuthRoute:
             summary="Login",
             description="Login",
             response_model=str
+        )
+
+        self.router.add_api_route(
+            path="/register",
+            endpoint=self.handler.register,
+            methods=["POST"],
+            response_model=SuccessResponse,
+            summary="Register",
+            description="Register"
         )

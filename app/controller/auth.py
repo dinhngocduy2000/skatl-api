@@ -1,8 +1,9 @@
 from datetime import timedelta
+import bcrypt
 from fastapi import HTTPException, status
 from repository.auth import ACCESS_TOKEN_EXPIRE_MINUTES
 from utils.exception_handler import ServiceException
-from schemas.auth import UserBase
+from schemas.auth import UserBase, UserRegisterRequest
 from repository.registry import Registry
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,16 +17,35 @@ class AuthController:
     async def verify_generate_token(self, input: UserBase):
         async def _verify_generate_token(session: AsyncSession):
             user = await self.repo.auth_repo().authenticate_user(session=session, email=input.email)
-            if user is None: 
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
-            
-            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            access_token = self.repo.auth_repo().create_access_token(
+            if user is None:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+
+            access_token_expires = timedelta(
+                minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            access_token_expires = timedelta(
+                minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            access_token = await self.repo.auth_repo().create_access_token(
                 data={"sub": user.username}, expires_delta=access_token_expires
-            )   
+            )
             return access_token
-            
+
         return await self.repo.do_tx(_verify_generate_token)
-        
+
+    async def register_user(self, input: UserRegisterRequest):
+        async def _register_user(session: AsyncSession):
+            user = await self.repo.auth_repo().authenticate_user(session=session, email=input.email)
+            if user is not None:
+                raise ServiceException(
+                    detail="An account with this email address already exists!")
+
+            hash_password = bcrypt.hashpw(input.password.encode(
+                "utf-8"), bcrypt.gensalt()).decode("utf-8")
+            data = UserRegisterRequest(
+                email=input.email, username=input.username, hashed_password=hash_password)
+
+            await self.repo.auth_repo().create_user(data, session)
+            return
+        return await self.repo.do_tx(_register_user)
+
     # async def authenticate_user()
