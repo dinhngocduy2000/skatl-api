@@ -1,11 +1,10 @@
+from common.logger import get_logger
 import asyncio
 import functools
 import inspect
 import traceback
 from contextvars import ContextVar
 from fastapi import HTTPException
-
-from app.common.logger import get_logger
 
 logger = get_logger(__name__)
 

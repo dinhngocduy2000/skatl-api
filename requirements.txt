@@ -6,11 +6,12 @@ bcrypt
 blinker
 ujson
 pydantic == 2.7.4
-pydantic_settings
+pydantic_settings ==2.5.2
 pandas
 python-multipart
 sqlalchemy[asyncio] == 2.0.36
 asyncpg
+python-jose[cryptography]
 # azure-storage-blob >= 12.20.0
 # azure-identity >= 1.17.1
 # langfuse

@@ -2,14 +2,17 @@ from typing import Callable, TypeVar
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
+from repository.auth import AuthRepository
+
 T = TypeVar("T")
 
 class Registry:  # pylint: disable=too-many-instance-attributes
     _pg_engine: AsyncEngine
-   
+    _auth_repo: AuthRepository
 
     def __init__(self, pg_engine: AsyncEngine):
         self._pg_engine = pg_engine
+        self._auth_repo = AuthRepository()
         # Construct the repository instances here
      
 
@@ -31,4 +34,5 @@ class Registry:  # pylint: disable=too-many-instance-attributes
                 await session.close()
 
     # Function to get the repository instance
-   
+    def auth_repo(self)-> AuthRepository:
+        return self._auth_repo

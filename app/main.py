@@ -1,17 +1,18 @@
-from core.settings import settings
+import os
+import sys
+# Add the 'app' directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
 from loguru import logger
 from fastapi import Depends, FastAPI, HTTPException
 from typing import Callable
-from core.database.postgres import create_pg_engine
+from core.settings import settings
+from core.database.postgres import create_pg_engine, init_db
 from repository.registry import Registry
 from controller.auth import AuthController
 from handler.auth import AuthHandler
 from router.auth import AuthRoute
-import os
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 class App:
@@ -20,6 +21,7 @@ class App:
     def on_init_app(self) -> Callable:
         async def start_app() -> None:
             pg_engine = create_pg_engine()
+            await init_db(pg_engine)
             registry = Registry(pg_engine)
 
             auth_controller = AuthController(registry)
@@ -28,7 +30,7 @@ class App:
             auth_router = AuthRoute(auth_handler)
             prefix = "/api/v1"
             self.application.include_router(
-                auth_router.router, prefix=prefix+"/auth", tags=["Auth"]
+                auth_router.router, prefix=prefix, tags=["Auth"]
             )
 
         return start_app

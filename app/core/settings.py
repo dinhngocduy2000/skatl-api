@@ -10,7 +10,7 @@ class AppEnvTypes(Enum):
 class BaseAppSettings(BaseSettings):
     app_env: AppEnvTypes= AppEnvTypes.DEV
     class Config:
-        env_file="../../.env"
+        env_file="../.env"
         extra="ignore"
         
 
