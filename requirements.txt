@@ -1,28 +1,22 @@
 uvicorn[standard] == 0.20.0
 fastapi == 0.111.0
-aiofiles
 loguru
 PyJWT
 bcrypt
 blinker
 ujson
-aioredis
 pydantic == 2.7.4
 pydantic_settings
 pandas
 python-multipart
 sqlalchemy[asyncio] == 2.0.36
 asyncpg
-snowflake-id
 # azure-storage-blob >= 12.20.0
 # azure-identity >= 1.17.1
 # langfuse
 # chromadb
 # openai
-aiolimiter >= 1.1.0
 dateparser >= 1.2.0
-tenacity >= 8.4.2
-instructor >= 1.3.4
 # pdfminer-six == 20231228
 sqlalchemy-filterset >= 2.0.0
 # apscheduler >= 3.10.4
