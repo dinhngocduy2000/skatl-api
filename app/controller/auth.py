@@ -31,7 +31,7 @@ class AuthController:
             user_credential = await self.repo.auth_repo().create_access_token(
                 data=input.__dict__, expires_delta=access_token_expires
             )
-            return UserCredential(id=user.id, access_token=user_credential.access_token, expired_at=user_credential.expired_at, refresh_token="")
+            return UserCredential(id=user.id, access_token=user_credential.access_token, expired_at=user_credential.expired_at, refresh_token= user_credential.refresh_token)
 
         return await self.repo.do_tx(_verify_generate_token)
 

@@ -14,6 +14,7 @@ from schemas.auth import IUser, UserCredential, UserRegisterRequest
 # Configuration
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+REFRESH_TOKEN_EXPIRE_MIMUTES = 4000
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")  # Replace with a secure secret key
@@ -56,9 +57,16 @@ class AuthRepository:
             expire = datetime.utcnow() + expires_delta
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
+        #access token
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-        return UserCredential(access_token=encoded_jwt, refresh_token="", expired_at=expire.isoformat())
+        to_encode.update({"type":"access"})
+        access_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        #refresh_token
+        to_encode.update({"exp": datetime.utcnow() + timedelta(minutes=REFRESH_TOKEN_EXPIRE_MIMUTES)})
+        to_encode.update({"type":"refresh"})
+        refresh_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        
+        return UserCredential(access_token=access_token, refresh_token=refresh_token, expired_at=expire.isoformat())
 
     async def create_user(self, data: UserModel, session: AsyncSession) -> None:
         entity = UserModel(id=uuid4(), username=data.username,
