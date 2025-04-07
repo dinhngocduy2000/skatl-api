@@ -19,7 +19,7 @@ class AuthRoute:
             methods=["POST"],
             summary="Login",
             description="Login",
-            response_model=str
+            response_model=UserCredential
         )
 
         self.router.add_api_route(

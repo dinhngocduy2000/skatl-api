@@ -7,7 +7,7 @@ import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select
 from models.models import User as UserModel
-from schemas.auth import IUser, UserRegisterRequest
+from schemas.auth import IUser, UserCredential, UserRegisterRequest
 # Configuration
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -24,17 +24,15 @@ class AuthRepository:
             return None
         return IUser(id=user.id, username=user.username, email=user.email, is_active=user.is_active)
 
-    async def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None):
+    async def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None)->UserCredential:
         to_encode = data.copy()
-        if expires_delta:
+        if expires_delta is not None:
             expire = datetime.utcnow() + expires_delta
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
         to_encode.update({"exp": expire})
-
-        
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-        return encoded_jwt
+        return UserCredential(access_token=encoded_jwt, refresh_token="",expired_at=expire.isoformat())
 
     async def create_user(self,data: UserRegisterRequest, session:AsyncSession) -> None:
         entity = UserModel(id=uuid4(), username=data.username,

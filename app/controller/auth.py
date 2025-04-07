@@ -3,7 +3,7 @@ import bcrypt
 from fastapi import HTTPException, status
 from repository.auth import ACCESS_TOKEN_EXPIRE_MINUTES
 from utils.exception_handler import ServiceException
-from schemas.auth import UserBase, UserRegisterRequest
+from schemas.auth import UserBase, UserCredential, UserRegisterRequest
 from repository.registry import Registry
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,8 +14,8 @@ class AuthController:
     def __init__(self, repo: Registry):
         self.repo = repo
 
-    async def verify_generate_token(self, input: UserBase):
-        async def _verify_generate_token(session: AsyncSession):
+    async def verify_generate_token(self, input: UserBase) -> UserCredential:
+        async def _verify_generate_token(session: AsyncSession)-> UserCredential:
             user = await self.repo.auth_repo().authenticate_user(session=session, email=input.email)
             if user is None:
                 raise HTTPException(
@@ -25,10 +25,10 @@ class AuthController:
                 minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
             access_token_expires = timedelta(
                 minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            access_token = await self.repo.auth_repo().create_access_token(
+            user_credential = await self.repo.auth_repo().create_access_token(
                 data=input.__dict__, expires_delta=access_token_expires
             )
-            return access_token
+            return UserCredential(id=user.id, access_token=user_credential.access_token, expired_at=user_credential.expired_at, refresh_token="")
 
         return await self.repo.do_tx(_verify_generate_token)
 

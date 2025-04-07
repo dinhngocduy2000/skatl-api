@@ -1,5 +1,5 @@
 from common.success_response import SuccessResponse
-from schemas.auth import UserBase, UserRegisterRequest
+from schemas.auth import UserBase, UserCredential, UserRegisterRequest
 from utils.exception_handler import  handle_exceptions
 from controller.auth import AuthController
 
@@ -10,7 +10,7 @@ class AuthHandler:
         self.controller=controller
 
     @handle_exceptions()
-    async def login(self, input: UserBase) -> str:
+    async def login(self, input: UserBase) -> UserCredential:
         return await self.controller.verify_generate_token(input)
     
     @handle_exceptions()
