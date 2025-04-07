@@ -9,7 +9,7 @@ class IUser(BaseModel):
     username: str
     email: str
     is_active: bool
-
+    hashed_password:Optional[str] = None
 
 class UserBase(BaseModel):
     email: str = Field("", description="user's email")

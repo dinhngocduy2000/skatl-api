@@ -16,10 +16,13 @@ class AuthController:
 
     async def verify_generate_token(self, input: UserBase) -> UserCredential:
         async def _verify_generate_token(session: AsyncSession)-> UserCredential:
-            user = await self.repo.auth_repo().authenticate_user(session=session, email=input.email)
+            user = await self.repo.auth_repo().get_user(session=session, email=input.email)
             if user is None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+            password_valid = bcrypt.checkpw(input.password.encode("utf-8"), user.hashed_password.encode("utf-8"))
+            if not password_valid:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
 
             access_token_expires = timedelta(
                 minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -34,7 +37,7 @@ class AuthController:
 
     async def register_user(self, input: UserRegisterRequest):
         async def _register_user(session: AsyncSession):
-            user = await self.repo.auth_repo().authenticate_user(session=session, email=input.email)
+            user = await self.repo.auth_repo().get_user(session=session, email=input.email)
             if user is not None:
                 raise ServiceException(
                     detail="An account with this email address already exists!")
@@ -42,7 +45,7 @@ class AuthController:
             hash_password = bcrypt.hashpw(input.password.encode(
                 "utf-8"), bcrypt.gensalt()).decode("utf-8")
             data = UserRegisterRequest(
-                email=input.email, username=input.username, hashed_password=hash_password)
+                email=input.email, username=input.username, password=hash_password)
 
             await self.repo.auth_repo().create_user(data, session)
             return
