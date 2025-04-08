@@ -51,4 +51,4 @@ class AuthController:
             return
         return await self.repo.do_tx(_register_user)
 
-    # async def authenticate_user()
+  

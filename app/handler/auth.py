@@ -17,3 +17,4 @@ class AuthHandler:
     async def register(self,input:UserRegisterRequest)->None:
         await self.controller.register_user(input)
         return SuccessResponse(message="Success")
+    

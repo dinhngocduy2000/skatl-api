@@ -9,6 +9,8 @@ from jose import JWTError
 import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select
+import uuid
+from common import logger
 from models.models import User as UserModel
 from schemas.auth import IUser, UserCredential, UserRegisterRequest
 # Configuration
@@ -22,6 +24,28 @@ SECRET_KEY = os.getenv("SECRET_KEY")  # Replace with a secure secret key
 
 class AuthRepository:
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+    async def extract_access(self,  token: str) -> Optional[str]:
+        # extract claims from token
+        try:
+            claims = jwt.decode(
+                token, self.secret, algorithms=[self.encryption_algorithm]
+            )
+
+            # Add validation for role here if needed need to query database to get the latest role
+            # --impl--
+        except jwt.ExpiredSignatureError:
+            logger.error("Token expired")
+            return None
+        except jwt.InvalidTokenError:
+            logger.error("Invalid token")
+            return None
+
+        if "type" not in claims or claims["type"] != "access":
+            logger.error("Invalid token")
+            return None
+
+        return token
 
     async def authenticate_user(self, session: AsyncSession, token: str = Depends(oauth2_scheme)):
         credentials_exception = HTTPException(
@@ -74,3 +98,5 @@ class AuthRepository:
         session.add(entity)
         await session.commit()
         return
+
+    # async def refresh(self,token:str)->Op
