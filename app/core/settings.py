@@ -39,4 +39,3 @@ class AppSettings(BaseAppSettings):
         }
     
 settings = AppSettings()
-print(f"Loaded PG_URL: {settings.pg_url}")

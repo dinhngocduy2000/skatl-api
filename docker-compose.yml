@@ -20,10 +20,12 @@ services:
     build: .
     ports:
       - "${APP_PORT}:8000" # Host port from .env, container port fixed
+
     depends_on:
       - postgres
     environment:
       - PG_URL=${PG_URL} # Pass the constructed URL to FastAPI
+      - SECRET_KEY=${SECRET_KEY}
     volumes:
       - ./app:/app
     restart: unless-stopped

@@ -3,7 +3,7 @@ import os
 from typing import Optional
 from uuid import uuid4
 from dotenv import load_dotenv
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
 import jwt
@@ -75,7 +75,7 @@ class AuthRepository:
             return None
         return IUser(id=user.id, username=user.username, email=user.email, is_active=user.is_active, hashed_password=user.hashed_password)
 
-    async def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> UserCredential:
+    async def create_access_token(self,  data: dict, expires_delta: Optional[timedelta] = None) -> UserCredential:
         to_encode = data.copy()
         if expires_delta is not None:
             expire = datetime.utcnow() + expires_delta
@@ -90,6 +90,7 @@ class AuthRepository:
         to_encode.update({"type":"refresh"})
         refresh_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         
+    
         return UserCredential(access_token=access_token, refresh_token=refresh_token, expired_at=expire.isoformat())
 
     async def create_user(self, data: UserModel, session: AsyncSession) -> None:
