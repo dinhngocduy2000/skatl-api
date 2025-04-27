@@ -9,13 +9,12 @@ from jose import JWTError
 import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select
-import uuid
 from common import logger
 from models.models import User as UserModel
 from schemas.auth import IUser, UserCredential, UserRegisterRequest
 # Configuration
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_MIMUTES = 4000
 
 load_dotenv()
@@ -81,6 +80,7 @@ class AuthRepository:
             expire = datetime.utcnow() + expires_delta
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
+        
         #access token
         to_encode.update({"exp": expire})
         to_encode.update({"type":"access"})
@@ -91,7 +91,7 @@ class AuthRepository:
         refresh_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         
     
-        return UserCredential(access_token=access_token, refresh_token=refresh_token, expired_at=expire.isoformat())
+        return UserCredential(access_token=access_token, refresh_token=refresh_token, expired_at=expire.isoformat(timespec="seconds")+"Z")
 
     async def create_user(self, data: UserModel, session: AsyncSession) -> None:
         entity = UserModel(id=uuid4(), username=data.username,
