@@ -15,7 +15,7 @@ from models.models import User as UserModel
 from schemas.auth import IUser, UserCredential, UserRegisterRequest
 # Configuration
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_MIMUTES = 4000
 
 load_dotenv()
