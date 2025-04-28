@@ -10,11 +10,12 @@ import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select
 from common import logger
+from common.cookie import get_token_from_cookie
 from models.models import User as UserModel
 from schemas.auth import IUser, UserCredential, UserRegisterRequest
 # Configuration
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 1
 REFRESH_TOKEN_EXPIRE_MIMUTES = 4000
 
 load_dotenv()
@@ -24,12 +25,16 @@ SECRET_KEY = os.getenv("SECRET_KEY")  # Replace with a secure secret key
 class AuthRepository:
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-    async def extract_access(self,  token: str) -> Optional[str]:
+    async def extract_access(self,  token: str) -> Optional[UserCredential]:
         # extract claims from token
         try:
             claims = jwt.decode(
-                token, self.secret, algorithms=[self.encryption_algorithm]
+                token, self.secret, algorithms=[ALGORITHM]
             )
+            user_id = claims["id"]
+            if (user_id is not None):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
             # Add validation for role here if needed need to query database to get the latest role
             # --impl--
@@ -44,27 +49,7 @@ class AuthRepository:
             logger.error("Invalid token")
             return None
 
-        return token
-
-    async def authenticate_user(self, session: AsyncSession, token: str = Depends(oauth2_scheme)):
-        credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-        try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            email: str = payload.get("sub")
-            print(f'GET PAYLOAD: {payload}')
-            if email is None:
-                raise credentials_exception
-            # token_data = TokenData(username=username)
-        except JWTError:
-            raise credentials_exception
-        # user = self.get_user(session=session ,token_data.username)
-        # if user is None:
-        #     raise credentials_exception
-        # return user
+        return UserCredential(id=user_id, access_token=token, refresh_token="", expired_at=claims["exp"])
 
     async def get_user(self, session: AsyncSession, email: str) -> IUser:
         stmt = select(UserModel).where(UserModel.email == email)
@@ -80,17 +65,17 @@ class AuthRepository:
             expire = datetime.utcnow() + expires_delta
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
-        
-        #access token
+
+        # access token
         to_encode.update({"exp": expire})
-        to_encode.update({"type":"access"})
+        to_encode.update({"type": "access"})
         access_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-        #refresh_token
-        to_encode.update({"exp": datetime.utcnow() + timedelta(minutes=REFRESH_TOKEN_EXPIRE_MIMUTES)})
-        to_encode.update({"type":"refresh"})
+        # refresh_token
+        to_encode.update({"exp": datetime.utcnow() +
+                         timedelta(minutes=REFRESH_TOKEN_EXPIRE_MIMUTES)})
+        to_encode.update({"type": "refresh"})
         refresh_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-        
-    
+
         return UserCredential(access_token=access_token, refresh_token=refresh_token, expired_at=expire.isoformat(timespec="seconds")+"Z")
 
     async def create_user(self, data: UserModel, session: AsyncSession) -> None:
@@ -100,4 +85,5 @@ class AuthRepository:
         await session.commit()
         return
 
+   
     # async def refresh(self,token:str)->Op

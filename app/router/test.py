@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from common.auth_middleware import get_current_user
+from common.cookie import get_token_from_cookie
 from common.success_response import SuccessResponse
 
 from handler.test import TesstHandler
@@ -18,14 +20,8 @@ class TestRoute:
             methods=["GET"],
             summary="Login",
             description="Login",
-            response_model=str
+            dependencies=[Depends(get_token_from_cookie), Depends(get_current_user)],
+            response_model=str,
         )
 
-        self.router.add_api_route(
-            path="/register",
-            endpoint=self.handler.register,
-            methods=["POST"],
-            response_model=SuccessResponse,
-            summary="Register",
-            description="Register"
-        )
+      
