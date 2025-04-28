@@ -12,8 +12,9 @@ from core.database.postgres import create_pg_engine, init_db
 from repository.registry import Registry
 from controller.auth import AuthController
 from handler.auth import AuthHandler
+from handler.test import TesstHandler
 from router.auth import AuthRoute
-
+from router.test import TestRoute
 
 class App:
     application: FastAPI
@@ -27,10 +28,15 @@ class App:
             auth_controller = AuthController(registry)
             # AuthMiddleware.init(auth_controller)
             auth_handler = AuthHandler(auth_controller)
+            test_handler = TesstHandler()
             auth_router = AuthRoute(auth_handler)
+            test_router = TestRoute(test_handler)
             prefix = "/api/v1"
             self.application.include_router(
                 auth_router.router, prefix=prefix, tags=["Auth"]
+            )
+            self.application.include_router(
+                test_router.router, prefix=prefix, tags=["Test"]
             )
 
         return start_app
@@ -45,7 +51,7 @@ class App:
         self.application = FastAPI(**settings.fastapi_kwargs)
         self.application.add_middleware(
             CORSMiddleware,
-            allow_origins=["*"],
+            allow_origins=["http://localhost:3000"],
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"]
