@@ -46,10 +46,9 @@ async def extract_access(token: str) -> Optional[UserCredential]:
             )
             user_id = claims.get("id")
             expired_at = datetime.fromtimestamp(claims.get("exp")).isoformat(timespec="seconds") +"Z"
-            if (user_id is not None):
+            if user_id is None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
-            print(f"CHECK EXP ERROR: {expired_at}")
             # Add validation for role here if needed need to query database to get the latest role
             # --impl--
         except jwt.ExpiredSignatureError:

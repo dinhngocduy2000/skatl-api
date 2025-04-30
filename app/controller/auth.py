@@ -29,7 +29,7 @@ class AuthController:
             access_token_expires = timedelta(
                 minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
             user_credential = await self.repo.auth_repo().create_access_token(
-                data=input.__dict__, expires_delta=access_token_expires
+                data=input, expires_delta=access_token_expires, user_id=user.id
             )
             return UserCredential(id=user.id, access_token=user_credential.access_token, expired_at=user_credential.expired_at, refresh_token= user_credential.refresh_token)
 

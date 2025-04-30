@@ -1,18 +1,19 @@
 from datetime import timedelta, datetime
 import os
 from typing import Optional
-from uuid import uuid4
+from uuid import UUID, uuid4
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
 import jwt
+from sqlalchemy import String
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select
 from common import logger
 from common.cookie import get_token_from_cookie
 from models.models import User as UserModel
-from schemas.auth import IUser, UserCredential, UserRegisterRequest
+from schemas.auth import IUser, UserBase, UserCredential, UserRegisterRequest
 # Configuration
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -59,8 +60,8 @@ class AuthRepository:
             return None
         return IUser(id=user.id, username=user.username, email=user.email, is_active=user.is_active, hashed_password=user.hashed_password)
 
-    async def create_access_token(self,  data: dict, expires_delta: Optional[timedelta] = None) -> UserCredential:
-        to_encode = data.copy()
+    async def create_access_token(self, user_id: UUID, data: UserBase, expires_delta: Optional[timedelta] = None) -> UserCredential:
+        to_encode = data.__dict__.copy()
         if expires_delta is not None:
             expire = datetime.utcnow() + expires_delta
         else:
@@ -68,6 +69,7 @@ class AuthRepository:
 
         # access token
         to_encode.update({"exp": expire})
+        to_encode.update({"id": str(user_id)})
         to_encode.update({"type": "access"})
         access_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         # refresh_token
@@ -85,5 +87,4 @@ class AuthRepository:
         await session.commit()
         return
 
-   
     # async def refresh(self,token:str)->Op
