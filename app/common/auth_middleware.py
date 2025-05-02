@@ -4,10 +4,8 @@ import os
 from typing import Optional
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status, Request
-from sqlalchemy.ext.asyncio import AsyncSession
+from schemas.auth import UserCredential
 from common.logger import get_logger
-from repository.auth import AuthRepository, IUser, UserCredential
-from jose import JWTError
 import jwt
 ALGORITHM = "HS256"
 logger = get_logger(__name__)
