@@ -30,3 +30,12 @@ class AuthRoute:
             summary="Register",
             description="Register"
         )
+
+        self.router.add_api_route(
+            path="/refresh",
+            endpoint=self.handler.refresh,
+            methods=["POST"],
+            response_model=UserCredential,
+            summary="Refresh token",
+            description="Refresh token"
+        )

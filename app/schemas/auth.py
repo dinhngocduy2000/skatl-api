@@ -13,7 +13,7 @@ class IUser(BaseModel):
 
 class UserBase(BaseModel):
     email: str = Field("", description="user's email")
-    password: str = Field("", description="password")
+    password: Optional[str] = Field(description="password", default=None)
 
 
 class UserCredential(BaseModel):
@@ -24,4 +24,6 @@ class UserCredential(BaseModel):
 
 class UserRegisterRequest(UserBase):
     username:str = Field("", description="username")
-    
+
+class RefreshTokenRequest(BaseModel):
+    token:str

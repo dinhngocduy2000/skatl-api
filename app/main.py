@@ -33,7 +33,7 @@ class App:
             test_router = TestRoute(test_handler)
             prefix = "/api/v1"
             self.application.include_router(
-                auth_router.router, prefix=prefix, tags=["Auth"]
+                auth_router.router, prefix=f"{prefix}/auth", tags=["Auth"]
             )
             self.application.include_router(
                 test_router.router, prefix=prefix, tags=["Test"]

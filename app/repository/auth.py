@@ -78,7 +78,7 @@ class AuthRepository:
         to_encode.update({"type": "refresh"})
         refresh_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-        return UserCredential(access_token=access_token, refresh_token=refresh_token, expired_at=expire.isoformat(timespec="seconds")+"Z")
+        return UserCredential(id=user_id,access_token=access_token, refresh_token=refresh_token, expired_at=expire.isoformat(timespec="seconds")+"Z")
 
     async def create_user(self, data: UserModel, session: AsyncSession) -> None:
         entity = UserModel(id=uuid4(), username=data.username,

@@ -1,5 +1,6 @@
+from typing import Optional
 from common.success_response import SuccessResponse
-from schemas.auth import UserBase, UserCredential, UserRegisterRequest
+from schemas.auth import RefreshTokenRequest, UserBase, UserCredential, UserRegisterRequest
 from utils.exception_handler import  handle_exceptions
 from controller.auth import AuthController
 
@@ -18,3 +19,6 @@ class AuthHandler:
         await self.controller.register_user(input)
         return SuccessResponse(message="Success")
     
+    @handle_exceptions()
+    async def refresh(self, input: RefreshTokenRequest) -> Optional[UserCredential]:
+        return await self.controller.refresh(token=input.token)
