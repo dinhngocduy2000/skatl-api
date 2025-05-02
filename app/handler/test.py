@@ -1,9 +1,9 @@
 from fastapi import Request
+from common.logger import get_logger
 from common.success_response import SuccessResponse
-from schemas.auth import UserBase, UserCredential, UserRegisterRequest
+from schemas.auth import UserRegisterRequest
 from utils.exception_handler import  handle_exceptions
-from controller.auth import AuthController
-
+logger = get_logger(__name__)
 
 class TesstHandler:
         

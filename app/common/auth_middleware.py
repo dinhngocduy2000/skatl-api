@@ -28,7 +28,7 @@ async def get_token_from_cookie(request: Request) -> str:
 async def get_current_user(
     token: str = Depends(get_token_from_cookie),
 ) -> Optional[UserCredential]:
-    print(f"CHECK TOKEN: {token}")
+    logger.info(f"CHECK TOKEN: {token}")
     credential = await extract_access(token=token)
     if not credential:
         raise HTTPException(
