@@ -17,7 +17,7 @@ from schemas.auth import IUser, UserBase, UserCredential, UserRegisterRequest
 # Configuration
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
-REFRESH_TOKEN_EXPIRE_MIMUTES = 4000
+REFRESH_TOKEN_EXPIRE_MIMUTES = 120
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")  # Replace with a secure secret key

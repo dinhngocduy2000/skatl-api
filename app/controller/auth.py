@@ -30,12 +30,12 @@ class AuthController:
             user = await self.repo.auth_repo().get_user(session=session, email=input.email)
             if user is None:
                 raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+                    status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect email or password")
             password_valid = bcrypt.checkpw(input.password.encode(
                 "utf-8"), user.hashed_password.encode("utf-8"))
             if not password_valid:
                 raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
+                    status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect password")
 
             access_token_expires = timedelta(
                 minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -64,6 +64,7 @@ class AuthController:
         return await self.repo.do_tx(_register_user)
 
     async def refresh(self, token: str) -> Optional[UserCredential]:
+        logger.info(f'CHECK REFRESH TOKEN: {token}')
         # extract claims from token
         try:
             claims = jwt.decode(
