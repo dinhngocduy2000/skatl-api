@@ -46,10 +46,13 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
+    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), nullable=True)
+    # Other user fields...
 
+    # Optional: Define the inverse relationship
+    project = relationship("Project", backref="members")
     boards = relationship("Board", back_populates="owner")
     tasks = relationship("Task", back_populates="assignee")
-
 
 class Project(Base):
     __tablename__ = "projects"
@@ -61,8 +64,7 @@ class Project(Base):
                         index=True, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=True, index=True,
                         default=datetime.utcnow, onupdate=datetime.utcnow)
-    users = relationship("User", secondary="project_users",
-                         back_populates="projects")
+    members = relationship("User", backref="project")
 
 
 class ProjectUsers(Base):
