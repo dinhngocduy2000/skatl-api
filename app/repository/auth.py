@@ -4,9 +4,9 @@ from uuid import uuid4
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select
+from schemas.domain.auth import IUser
 from common.logger import get_logger
 from models.models import User as UserModel
-from schemas.auth import IUser
 logger = get_logger(__name__)
 class AuthRepository:
 

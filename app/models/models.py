@@ -42,3 +42,12 @@ class User(Base):
 
     boards = relationship("Board", back_populates="owner")
     tasks = relationship("Task", back_populates="assignee")
+
+class Project(Base):
+    __tablename__ = "projects"
+    
+    id = Column(UUID(as_uuid=True),primary_key=True, index=True)
+    project_name = Column(String(50), unique=True, index= True, nullable=False)
+    description = Column(String(250), nullable=True, index=True)
+    created_at = Column(DateTime,nullable=False, index=True, default=datetime.utcnow)
+    
