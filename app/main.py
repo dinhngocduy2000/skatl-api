@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
 from loguru import logger
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import FastAPI
 from typing import Callable
 from core.settings import settings
 from core.database.postgres import create_pg_engine, init_db

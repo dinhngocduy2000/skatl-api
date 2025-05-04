@@ -2,8 +2,8 @@ from datetime import date, datetime
 from enum import Enum
 from typing import List, Optional
 from uuid import UUID
-
 from pydantic import BaseModel
+from common.enum import OrderDirection
 
 
 class BaseModelDict(BaseModel):

@@ -5,12 +5,6 @@ from pydantic import Field
 from schemas.base import BaseModelDict
 
 
-class IUser(BaseModelDict):
-    id: Optional[UUID] = None
-    username: Optional[str] = None
-    email: Optional[str] = None
-    is_active: Optional[bool] = None
-    hashed_password: Optional[str] = None
 
 class UserBase(BaseModelDict):
     email: str = Field("", description="user's email",)

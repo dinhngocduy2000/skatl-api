@@ -12,7 +12,8 @@ class AuthHandler:
 
     @handle_exceptions()
     async def login(self, input: UserLoginRequest) -> UserCredentialResponse:
-        return await self.controller.verify_generate_token(input)
+        user_credential =  await self.controller.verify_generate_token(input)
+        return UserCredentialResponse(**user_credential.dict())
     
     @handle_exceptions()
     async def register(self,input:UserRegisterRequest)->None:
@@ -21,4 +22,5 @@ class AuthHandler:
     
     @handle_exceptions()
     async def refresh(self, input: RefreshTokenRequest) -> Optional[UserCredentialResponse]:
-        return await self.controller.refresh(token=input.token)
+        user_credential = await self.controller.refresh(token=input.token)
+        return UserCredentialResponse(**user_credential.dict())

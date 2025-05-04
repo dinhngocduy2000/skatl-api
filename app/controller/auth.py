@@ -95,8 +95,8 @@ class AuthController:
 
         return await self.repo.do_tx(_verify_generate_token)
 
-    async def register_user(self, input: UserRegisterRequest):
-        async def _register_user(session: AsyncSession):
+    async def register_user(self, input: UserRegisterRequest) -> None:
+        async def _register_user(session: AsyncSession)->None:
             user = await self.repo.auth_repo().get_user(session=session, email=input.email)
             if user is not None:
                 raise ServiceException(

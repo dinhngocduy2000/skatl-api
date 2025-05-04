@@ -1,5 +1,6 @@
+from schemas.domain.user import IUser
 from schemas.base import BaseModelDict
-from schemas.domain.auth import IUser, UserBase, UserCredential, UserRegister
+from schemas.domain.auth import  UserBase, UserCredential, UserRegister
 
 
 class IUserResponse(IUser):
