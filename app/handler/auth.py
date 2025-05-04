@@ -1,6 +1,6 @@
 from typing import Optional
+from schemas.dto.auth import RefreshTokenRequest, UserCredentialResponse, UserLoginRequest, UserRegisterRequest
 from common.success_response import SuccessResponse
-from schemas.auth import RefreshTokenRequest, UserBase, UserCredential, UserRegisterRequest
 from utils.exception_handler import  handle_exceptions
 from controller.auth import AuthController
 
@@ -11,8 +11,9 @@ class AuthHandler:
         self.controller=controller
 
     @handle_exceptions()
-    async def login(self, input: UserBase) -> UserCredential:
-        return await self.controller.verify_generate_token(input)
+    async def login(self, input: UserLoginRequest) -> UserCredentialResponse:
+        user_credential =  await self.controller.verify_generate_token(input)
+        return UserCredentialResponse(**user_credential.dict())
     
     @handle_exceptions()
     async def register(self,input:UserRegisterRequest)->None:
@@ -20,5 +21,6 @@ class AuthHandler:
         return SuccessResponse(message="Success")
     
     @handle_exceptions()
-    async def refresh(self, input: RefreshTokenRequest) -> Optional[UserCredential]:
-        return await self.controller.refresh(token=input.token)
+    async def refresh(self, input: RefreshTokenRequest) -> Optional[UserCredentialResponse]:
+        user_credential = await self.controller.refresh(token=input.token)
+        return UserCredentialResponse(**user_credential.dict())
