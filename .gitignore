@@ -1,64 +1,64 @@
 # Python
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
+*$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
-# Virtual Environment
-venv/
-env/
-.venv/
-
-# Environment Variables
+# Virtual environment
 .env
-.env.local
-.env.dev
-.env.prod
+.venv
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# FastAPI / Uvicorn
+*.log
+uvicorn.log
+
+# Alembic
+app/alembic/versions/*.pyc
+alembic.ini
 
 # Database
-*.db
 *.sqlite3
+*.db
 
-# Logs
-*.log
-logs/
+# Environment variables
+.env
+*.env
+*.env.*
+!.env.example
 
-# Testing
-.coverage
-htmlcov/
-.pytest_cache/
-
-# Build and Deployment
-dist/
-build/
-*.spec
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
 
 # macOS
 .DS_Store
 
-# Windows
-Thumbs.db
+# pytest
+.pytest_cache/
+pytestdebug.log
+
+# Coverage
+.coverage
+coverage.xml
+*,cover
+htmlcov/
+
+# Local development
+*.swp
+*~
+
+# Dependency directories
+pip-wheel-metadata/
+dist/
+build/

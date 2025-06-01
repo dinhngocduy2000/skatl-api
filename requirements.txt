@@ -12,6 +12,8 @@ python-multipart
 sqlalchemy[asyncio] == 2.0.36
 asyncpg
 python-jose[cryptography]
+alembic
+psycopg2-binary
 # azure-storage-blob >= 12.20.0
 # azure-identity >= 1.17.1
 # langfuse

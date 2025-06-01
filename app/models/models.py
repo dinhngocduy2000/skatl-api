@@ -7,34 +7,34 @@ from core.database.postgres import Base
 from sqlalchemy.orm import relationship
 
 
-class Board(Base):
-    __tablename__ = "boards"
+# class Board(Base):
+#     __tablename__ = "boards"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    description = Column(String)
-    owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+#     id = Column(UUID(as_uuid=True), primary_key=True, index=True)
+#     title = Column(String, nullable=False)
+#     description = Column(String)
+#     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+#     created_at = Column(DateTime, default=datetime.utcnow)
 
-    owner = relationship("User", back_populates="boards")
-    tasks = relationship("Task", back_populates="board")
+#     owner = relationship("User", back_populates="boards")
+#     tasks = relationship("Task", back_populates="board")
 
 
-class Task(Base):
-    __tablename__ = "tasks"
+# class Task(Base):
+#     __tablename__ = "tasks"
 
-    id = Column(UUID, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    description = Column(String)
-    # e.g., "todo", "in_progress", "done"
-    status = Column(String, default="todo")
-    board_id = Column(UUID, ForeignKey("boards.id"), nullable=False)
-    assignee_id = Column(UUID, ForeignKey("users.id"), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    due_date = Column(DateTime, nullable=True)
+#     id = Column(UUID, primary_key=True, index=True)
+#     title = Column(String, nullable=False)
+#     description = Column(String)
+#     # e.g., "todo", "in_progress", "done"
+#     status = Column(String, default="todo")
+#     board_id = Column(UUID, ForeignKey("boards.id"), nullable=False)
+#     assignee_id = Column(UUID, ForeignKey("users.id"), nullable=True)
+#     created_at = Column(DateTime, default=datetime.utcnow)
+#     due_date = Column(DateTime, nullable=True)
 
-    board = relationship("Board", back_populates="tasks")
-    assignee = relationship("User", back_populates="tasks")
+#     board = relationship("Board", back_populates="tasks")
+#     assignee = relationship("User", back_populates="tasks")
 
 
 class User(Base):
@@ -45,13 +45,14 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
+
     project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), nullable=True)
     # Other user fields...
 
     # Optional: Define the inverse relationship
     project = relationship("Project", back_populates="members")
-    boards = relationship("Board", back_populates="owner")
-    tasks = relationship("Task", back_populates="assignee")
+    # boards = relationship("Board", back_populates="owner")
+    # tasks = relationship("Task", back_populates="assignee")
     project_users = relationship("ProjectUsers", back_populates="user")
 
 
