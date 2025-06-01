@@ -13,8 +13,7 @@ class Board(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     title = Column(String, nullable=False)
     description = Column(String)
-    owner_id = Column(UUID(as_uuid=True), ForeignKey(
-        "users.id"), nullable=False)
+    owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     owner = relationship("User", back_populates="boards")
@@ -50,9 +49,11 @@ class User(Base):
     # Other user fields...
 
     # Optional: Define the inverse relationship
-    project = relationship("Project", backref="members")
+    project = relationship("Project", back_populates="members")
     boards = relationship("Board", back_populates="owner")
     tasks = relationship("Task", back_populates="assignee")
+    project_users = relationship("ProjectUsers", back_populates="user")
+
 
 class Project(Base):
     __tablename__ = "projects"
@@ -60,11 +61,16 @@ class Project(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     project_name = Column(String(50), unique=True, index=True, nullable=False)
     description = Column(String(250), nullable=True, index=True)
-    created_at = Column(DateTime, nullable=True,
-                        index=True, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=True, index=True,
-                        default=datetime.utcnow, onupdate=datetime.utcnow)
-    members = relationship("User", backref="project")
+    created_at = Column(DateTime, nullable=True, index=True, default=datetime.utcnow)
+    updated_at = Column(
+        DateTime,
+        nullable=True,
+        index=True,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )
+    members = relationship("User", back_populates="project")
+    project_users = relationship("ProjectUsers", back_populates="project")
 
 
 class ProjectUsers(Base):
