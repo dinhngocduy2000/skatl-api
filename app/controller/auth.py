@@ -6,9 +6,10 @@ import bcrypt
 from dotenv import load_dotenv
 from fastapi import HTTPException, status
 import jwt
+from schemas.dto.auth import UserRegisterRequest
+from schemas.domain.auth import UserBase, UserCredential
 from common.logger import get_logger
 from utils.exception_handler import ServiceException
-from schemas.auth import UserBase, UserCredential, UserRegisterRequest
 from repository.registry import Registry
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -94,8 +95,8 @@ class AuthController:
 
         return await self.repo.do_tx(_verify_generate_token)
 
-    async def register_user(self, input: UserRegisterRequest):
-        async def _register_user(session: AsyncSession):
+    async def register_user(self, input: UserRegisterRequest) -> None:
+        async def _register_user(session: AsyncSession)->None:
             user = await self.repo.auth_repo().get_user(session=session, email=input.email)
             if user is not None:
                 raise ServiceException(

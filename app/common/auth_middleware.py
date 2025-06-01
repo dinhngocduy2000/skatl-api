@@ -4,7 +4,7 @@ import os
 from typing import Optional
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status, Request
-from schemas.auth import UserCredential
+from schemas.domain.auth import UserCredential
 from common.logger import get_logger
 import jwt
 ALGORITHM = "HS256"

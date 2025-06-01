@@ -1,7 +1,7 @@
 from fastapi import Request
+from schemas.dto.auth import UserRegisterRequest
 from common.logger import get_logger
 from common.success_response import SuccessResponse
-from schemas.auth import UserRegisterRequest
 from utils.exception_handler import  handle_exceptions
 logger = get_logger(__name__)
 

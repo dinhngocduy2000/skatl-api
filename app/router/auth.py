@@ -1,6 +1,6 @@
 from fastapi import APIRouter
+from schemas.dto.auth import UserCredentialResponse
 from common.success_response import SuccessResponse
-from schemas.auth import UserCredential
 
 from handler.auth import AuthHandler
 
@@ -19,7 +19,7 @@ class AuthRoute:
             methods=["POST"],
             summary="Login",
             description="Login",
-            response_model=UserCredential
+            response_model=UserCredentialResponse
         )
 
         self.router.add_api_route(
@@ -35,7 +35,7 @@ class AuthRoute:
             path="/refresh",
             endpoint=self.handler.refresh,
             methods=["POST"],
-            response_model=UserCredential,
+            response_model=UserCredentialResponse,
             summary="Refresh token",
             description="Refresh token"
         )
